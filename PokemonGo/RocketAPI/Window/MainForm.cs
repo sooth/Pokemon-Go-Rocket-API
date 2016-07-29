@@ -89,6 +89,50 @@ namespace PokemonGo.RocketAPI.Window
                         "https://raw.githubusercontent.com/DetectiveSquirrel/Pokemon-Go-Rocket-API/master/PokemonGo/RocketAPI/Window/Properties/AssemblyInfo.cs");
         }
 
+        public async Task<int> GetItemAmountByType(GetInventoryResponse inv, MiscEnums.Item type)
+        {
+            var pokeballs = inv.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData?.Item).Where(p => p != null);
+            return pokeballs.FirstOrDefault(i => (MiscEnums.Item)i.Item_ == type)?.Count ?? 0;
+        }
+
+
+        private async Task<MiscEnums.Item> GetBestBall(GetInventoryResponse inventory2, WildPokemon pokemon)
+        {
+            var pokemonCp = pokemon?.PokemonData?.Cp;
+
+            var pokeBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_POKE_BALL);
+            var greatBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_GREAT_BALL);
+            var ultraBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_ULTRA_BALL);
+            var masterBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_MASTER_BALL);
+
+            if (masterBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_MASTER_BALL;
+            else if (ultraBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            else if (greatBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (ultraBallsCount > 0 && pokemonCp >= 600)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            else if (greatBallsCount > 0 && pokemonCp >= 600)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (greatBallsCount > 0 && pokemonCp >= 350)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (pokeBallsCount > 0)
+                return MiscEnums.Item.ITEM_POKE_BALL;
+            if (greatBallsCount > 0)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+            if (ultraBallsCount > 0)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            if (masterBallsCount > 0)
+                return MiscEnums.Item.ITEM_MASTER_BALL;
+
+            return MiscEnums.Item.ITEM_POKE_BALL;
+        }
+
+
         public void ColoredConsoleWrite(Color color, string text)
         {
             if (InvokeRequired)
@@ -344,6 +388,7 @@ namespace PokemonGo.RocketAPI.Window
                 var encounterPokemonResponse = await client.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnpointId);
                 var pokemonCP = encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp;
                 var pokemonIV = Math.Round(Perfect(encounterPokemonResponse?.WildPokemon?.PokemonData));
+                var pokeball = await GetBestBall(inventory2, encounterPokemonResponse.WildPokemon);
                 CatchPokemonResponse caughtPokemonResponse;
                 do
                 {
@@ -353,7 +398,7 @@ namespace PokemonGo.RocketAPI.Window
                     if (ClientSettings.RazzBerryMode == "probability")
                         if (encounterPokemonResponse.CaptureProbability.CaptureProbability_.First() < ClientSettings.RazzBerrySetting)
                             await client.UseRazzBerry(client, pokemon.EncounterId, pokemon.SpawnpointId);
-                    caughtPokemonResponse = await client.CatchPokemon(pokemon.EncounterId, pokemon.SpawnpointId, pokemon.Latitude, pokemon.Longitude, MiscEnums.Item.ITEM_POKE_BALL, pokemonCP); ; //note: reverted from settings because this should not be part of settings but part of logic
+                    caughtPokemonResponse = await client.CatchPokemon(pokemon.EncounterId, pokemon.SpawnpointId, pokemon.Latitude, pokemon.Longitude, pokeball, pokemonCP); ; //note: reverted from settings because this should not be part of settings but part of logic
                 } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed || caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
                 string pokemonName;
