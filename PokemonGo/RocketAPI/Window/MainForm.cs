@@ -257,6 +257,50 @@ namespace PokemonGo.RocketAPI.Window
             }
         }
 
+        public async Task<int> GetItemAmountByType(GetInventoryResponse inv, MiscEnums.Item type)
+        {
+            var pokeballs = inv.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData?.Item).Where(p => p != null);
+            return pokeballs.FirstOrDefault(i => (MiscEnums.Item)i.Item_ == type)?.Count ?? 0;
+        }
+
+
+        private async Task<MiscEnums.Item> GetBestBall(GetInventoryResponse inventory2, WildPokemon pokemon)
+        {
+            var pokemonCp = pokemon?.PokemonData?.Cp;
+
+            var pokeBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_POKE_BALL);
+            var greatBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_GREAT_BALL);
+            var ultraBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_ULTRA_BALL);
+            var masterBallsCount = await GetItemAmountByType(inventory2, MiscEnums.Item.ITEM_MASTER_BALL);
+
+            if (masterBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_MASTER_BALL;
+            else if (ultraBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            else if (greatBallsCount > 0 && pokemonCp >= 1000)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (ultraBallsCount > 0 && pokemonCp >= 600)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            else if (greatBallsCount > 0 && pokemonCp >= 600)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (greatBallsCount > 0 && pokemonCp >= 350)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+
+            if (pokeBallsCount > 0)
+                return MiscEnums.Item.ITEM_POKE_BALL;
+            if (greatBallsCount > 0)
+                return MiscEnums.Item.ITEM_GREAT_BALL;
+            if (ultraBallsCount > 0)
+                return MiscEnums.Item.ITEM_ULTRA_BALL;
+            if (masterBallsCount > 0)
+                return MiscEnums.Item.ITEM_MASTER_BALL;
+
+            return MiscEnums.Item.ITEM_POKE_BALL;
+        }
+
+
         private async void Execute()
         {
             client = new Client(ClientSettings);
