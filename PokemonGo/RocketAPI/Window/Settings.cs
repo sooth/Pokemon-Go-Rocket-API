@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AllEnum;
 using PokemonGo.RocketAPI.Enums;
+using Context;
+using System.Linq;
 
 #endregion
 
@@ -56,13 +58,28 @@ namespace PokemonGo.RocketAPI.Window
         {
             get
             {
-                return (GetSetting() != string.Empty ? GetSetting() : "Ptc") == "Ptc" ? AuthType.Ptc : AuthType.Google;
+                return (GetSetting() != string.Empty ? GetSetting() : "Ptc") == "Ptc" ? AuthType.Ptc : AuthType.Ptc;
             }
             set { SetSetting(value.ToString()); }
         }
 
-        public string PtcUsername => GetSetting() != string.Empty ? GetSetting() : "username";
-        public string PtcPassword => GetSetting() != string.Empty ? GetSetting() : "password";
+        public static Account GetFreeAccount()
+        {
+            DataContext db = new DataContext();
+            Account free = db.Accounts.Where(x => x.CheckedOut == 0).FirstOrDefault();
+            if (free != null)
+            {
+                Console.WriteLine("Got account of :" + free.Username);
+                free.CheckedOut = 1;
+                db.SubmitChanges();
+            }
+            return free;
+        }
+        public static Account CheckedOutAccount = GetFreeAccount();
+
+        public string PtcUsername => GetSetting() != string.Empty ? GetSetting() : CheckedOutAccount.Username;
+        public string PtcPassword => GetSetting() != string.Empty ? GetSetting() : CheckedOutAccount.Password;
+ 
         public string Email => GetSetting() != string.Empty ? GetSetting() : "Email";
         public string Password => GetSetting() != string.Empty ? GetSetting() : "Password";
 

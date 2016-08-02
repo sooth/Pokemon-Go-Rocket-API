@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database Name="Data" EntityNamespace="Context" ContextNamespace="Context" Class="DataContext" xmlns:ed="http://devart.com/schemas/EntityDeveloper/1.0" ed:Guid="8ab3a191-dcd5-43e4-a884-c03c655d0b1e" Provider="Devart.Data.MySql.Linq.Provider.MySqlDataProvider, Devart.Data.MySql.Linq" Extended="true" xmlns="http://schemas.devart.com/linqconnect/mapping">
+  <Connection Mode="ConnectionString" ConnectionString="User Id=Pogo_user;Password=TotallySecurePassword;Host=192.168.3.54;Persist Security Info=True" Provider="Devart.Data.MySql" />
+  <Table Name="PokemonGo.Accounts" Member="Accounts">
+    <Type Name="Account" ed:Guid="18a5fbf3-3198-41c0-b8a5-d1de4336f623">
+      <Column Name="Id" Type="System.Int32" AutoSync="OnInsert" DbType="INT(11) NOT NULL AUTO_INCREMENT" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" Precision="11" ed:ValidateRequired="true" ed:Guid="96f92162-82e2-4629-adb4-a51e0afd89d7" />
+      <Column Name="Username" Type="System.String" DbType="VARCHAR(45) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="45" ed:ValidateMaxLength="45" ed:ValidateRequired="true" ed:Guid="12e7dc8c-1414-483e-8dc9-49ffff41e01b" />
+      <Column Name="`Password`" Member="Password" Type="System.String" DbType="VARCHAR(45) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="45" ed:ValidateMaxLength="45" ed:ValidateRequired="true" ed:Guid="e136b5c1-d1ad-44b8-9fe3-bb76c75636d1" />
+      <Column Name="CheckedOut" Type="System.Int32" DbType="INT(1) NOT NULL" CanBeNull="false" UpdateCheck="Never" Precision="1" ed:ValidateRequired="true" ed:Guid="63f6bf83-6831-441c-8336-066df1b193c2" />
+      <Column Name="LastActivity" Type="System.DateTime" DbType="DATETIME NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="0c65c41e-05dc-4ece-b867-2c16e93dbf1d" />
+    </Type>
+  </Table>
+</Database>

@@ -77,6 +77,8 @@ namespace PokemonGo.RocketAPI.Window
 
             InitializeMap();
             InitializePokemonForm();
+            bot_started = true;
+            Execute();
         }
 
         public void Restart()
@@ -1140,7 +1142,7 @@ namespace PokemonGo.RocketAPI.Window
             settingsForm.ShowDialog();
         }
 
-        private static bool bot_started = false;
+        private static bool bot_started = true;
         private void startStopBotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!bot_started)

@@ -43,6 +43,10 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Devart.Data, Version=5.0.1479.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" />
+    <Reference Include="Devart.Data.Linq, Version=4.5.1024.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" />
+    <Reference Include="Devart.Data.MySql, Version=8.6.687.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" />
+    <Reference Include="Devart.Data.MySql.Linq, Version=4.5.1024.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" />
     <Reference Include="GMap.NET.Core">
       <HintPath>lib\GMap.NET.Core.dll</HintPath>
     </Reference>
@@ -76,6 +80,11 @@
   <ItemGroup>
     <Compile Include="CueTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Database\PokemonGo.Designer.cs">
+      <DependentUpon>PokemonGo.lqml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="LocationManager.cs" />
     <Compile Include="MainForm.cs">
@@ -137,6 +146,16 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Database\PokemonGo.Diagram1.view">
+      <DependentUpon>PokemonGo.lqml</DependentUpon>
+    </None>
+    <None Include="Database\PokemonGo.edps">
+      <DependentUpon>PokemonGo.lqml</DependentUpon>
+    </None>
+    <None Include="Database\PokemonGo.lqml">
+      <Generator>DevartLinqToSqlGenerator</Generator>
+      <LastGenOutput>PokemonGo.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
